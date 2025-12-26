@@ -5,7 +5,7 @@ import plotly.express as px
 # Page setup
 st.set_page_config(page_title="Smart Energy Dashboard", layout="wide")
 
-# Load custom CSS theme (one-liner, no indentation issues)
+# Load custom CSS theme (one-liner to avoid indentation error)
 st.markdown(f"<style>{open('theme.css').read()}</style>", unsafe_allow_html=True)
 
 # Top navigation bar
@@ -87,19 +87,6 @@ costs = kwh_per_device * tariff
 total_kwh = kwh_per_device.sum()
 total_cost = costs.sum()
 
-# Top Energy Consumers
-st.subheader("🔌 Top Energy Consumers")
-devices = ["A.C", "Fridge", "Fan", "Heater", "Mixer", "Light", "Mobile", "Laptop", "Car", "Bike"]
-selected_device = st.selectbox("Select a device to view details", devices)
-
-if selected_device:
-    st.markdown(f"### 🔍 {selected_device} Usage Details")
-    col1, col2, col3, col4 = st.columns(4)
-    col1.metric("Current Usage", "0.85 kWh")
-    col2.metric("Current Cost", "₹6.80")
-    col3.metric("Weekly Total", "5.2 kWh")
-    col4.metric("Comparison", "↑ 12% vs last week")
-
 # KPI cards
 st.markdown("<div class='metric-container'>", unsafe_allow_html=True)
 col1, col2, col3 = st.columns(3)
@@ -115,6 +102,43 @@ summary = pd.DataFrame({
     "Estimated Cost (INR)": costs.round(2)
 })
 st.dataframe(summary, use_container_width=True)
+
+# 🔌 Top Energy Consumers — Tile Layout
+st.subheader("🔌 Top Energy Consumers")
+tiles = ["A.C", "Fridge", "Fan", "Heater", "Mixer", "Light", "Mobile", "Laptop", "Car", "Bike"]
+selected_device = None
+cols = st.columns(5)
+for i, device in enumerate(tiles):
+    if cols[i % 5].button(device):
+        selected_device = device
+
+# Show details if a tile is clicked
+if selected_device:
+    st.markdown(f"### 🔍 {selected_device} Usage Details")
+
+    # Simulated values — replace with real logic later
+    current_kwh = 0.85
+    current_cost = current_kwh * tariff
+    weekly_kwh = 5.2
+    weekly_cost = weekly_kwh * tariff
+    monthly_kwh = 22.4
+    monthly_cost = monthly_kwh * tariff
+    week_change = "+12%"
+    month_change = "-5%"
+
+    col1, col2, col3, col4 = st.columns(4)
+    col1.metric("Current Usage", f"{current_kwh:.2f} kWh")
+    col2.metric("Current Cost", f"₹{current_cost:.2f}")
+    col3.metric("Weekly Total", f"{weekly_kwh:.2f} kWh\n₹{weekly_cost:.2f}")
+    col4.metric("Monthly Total", f"{monthly_kwh:.2f} kWh\n₹{monthly_cost:.2f}")
+
+    st.markdown(f"📊 Weekly Change: **{week_change}**")
+    st.markdown(f"📊 Monthly Change: **{month_change}**")
+
+    st.markdown("💡 **Recommendations:**")
+    st.markdown("- Use during off-peak hours to reduce cost")
+    st.markdown("- Consider energy-efficient alternatives")
+    st.markdown("- Monitor standby power usage")
 
 # Visual Trends
 st.subheader("📈 Visual Trends")
