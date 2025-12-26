@@ -175,4 +175,8 @@ st.download_button("Download Summary as CSV", csv, "summary.csv", "text/csv")
 
 # Footer
 st.markdown("""
-    <hr style
+    <hr style="margin-top:40px;">
+    <div style="text-align:center; color:gray; font-size:14px;">
+        © 2025 Smart Energy Dashboard | Built by Santosh Abhimanyu
+    </div>
+""", unsafe_allow_html=True)
