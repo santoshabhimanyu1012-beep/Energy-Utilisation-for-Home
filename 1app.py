@@ -22,9 +22,7 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# 🔌 Top Energy Consumers — Sorted Tiles with Minimal Light Colors
-st.subheader("🔌 Top Energy Consumers")
-
+# 🔌 Top Energy Consumers — Direct Status Tiles
 device_metrics = {
     "A.C": {"usage": 2.4, "cost": 19.2, "status": "High"},
     "Heater": {"usage": 2.1, "cost": 16.8, "status": "High"},
@@ -35,7 +33,6 @@ device_metrics = {
     "Mobile": {"usage": 0.3, "cost": 2.4, "status": "Low"},
 }
 
-# Sort devices by status: High → Medium → Low
 status_order = {"High": 0, "Medium": 1, "Low": 2}
 sorted_devices = sorted(device_metrics.items(), key=lambda x: status_order[x[1]["status"]])
 
@@ -43,13 +40,13 @@ selected_device = st.session_state.get("selected_device", None)
 cols = st.columns(4)
 
 for i, (device, data) in enumerate(sorted_devices):
-    bg = "#fdecea" if data["status"] == "High" else "#fffde7" if data["status"] == "Medium" else "#e8f5e9"
-    txt = "#c62828" if data["status"] == "High" else "#f9a825" if data["status"] == "Medium" else "#2e7d32"
+    bg = "#fff1f0" if data["status"] == "High" else "#fffbe6" if data["status"] == "Medium" else "#f6ffed"
+    txt = "#d4380d" if data["status"] == "High" else "#d4b106" if data["status"] == "Medium" else "#389e0d"
     with cols[i % 4]:
         if st.button(f"{device}", key=f"tile_{device}"):
             st.session_state.selected_device = device
         st.markdown(f"""
-            <div style='background:{bg}; padding:12px; border-radius:10px; text-align:center; border:1px solid #ddd; margin-top:5px;'>
+            <div style='background:{bg}; padding:12px; border-radius:10px; text-align:center; border:1px solid #ccc; margin-top:5px;'>
                 <b style='color:{txt}; font-size:16px;'>{device}</b><br>
                 <span style='font-size:14px;'>{data['usage']} kWh</span><br>
                 <span style='font-size:14px;'>₹{data['cost']}</span><br>
