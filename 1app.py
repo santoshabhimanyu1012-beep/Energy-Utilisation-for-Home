@@ -5,7 +5,7 @@ import plotly.express as px
 # Page setup
 st.set_page_config(page_title="Smart Energy Dashboard", layout="wide")
 
-# Load custom CSS theme (one-liner to avoid indentation error)
+# Load custom CSS theme
 st.markdown(f"<style>{open('theme.css').read()}</style>", unsafe_allow_html=True)
 
 # Top navigation bar
@@ -103,42 +103,55 @@ summary = pd.DataFrame({
 })
 st.dataframe(summary, use_container_width=True)
 
-# 🔌 Top Energy Consumers — Tile Layout
+# SAP-style Tiles for Top Energy Consumers
 st.subheader("🔌 Top Energy Consumers")
-tiles = ["A.C", "Fridge", "Fan", "Heater", "Mixer", "Light", "Mobile", "Laptop", "Car", "Bike"]
+
+device_metrics = {
+    "A.C": {"usage": 2.4, "cost": 19.2, "status": "High"},
+    "Fridge": {"usage": 1.9, "cost": 15.2, "status": "Medium"},
+    "Fan": {"usage": 0.8, "cost": 6.4, "status": "Low"},
+    "Heater": {"usage": 2.1, "cost": 16.8, "status": "High"},
+    "Mixer": {"usage": 0.5, "cost": 4.0, "status": "Low"},
+    "Light": {"usage": 0.6, "cost": 4.8, "status": "Low"},
+    "Mobile": {"usage": 0.3, "cost": 2.4, "status": "Low"},
+}
+
 selected_device = None
-cols = st.columns(5)
-for i, device in enumerate(tiles):
-    if cols[i % 5].button(device):
-        selected_device = device
+cols = st.columns(4)
+for i, (device, data) in enumerate(device_metrics.items()):
+    color = "#e74c3c" if data["status"] == "High" else "#f1c40f" if data["status"] == "Medium" else "#2ecc71"
+    with cols[i % 4]:
+        if st.button(f"{device}", key=device):
+            selected_device = device
+        st.markdown(f"""
+            <div style='background:{color}; padding:10px; border-radius:8px; color:white; text-align:center; margin-top:5px;'>
+                <b>{device}</b><br>
+                {data['usage']} kWh<br>
+                ₹{data['cost']}<br>
+                <span style='font-size:12px;'>Status: {data['status']}</span>
+            </div>
+        """, unsafe_allow_html=True)
 
 # Show details if a tile is clicked
 if selected_device:
+    data = device_metrics[selected_device]
     st.markdown(f"### 🔍 {selected_device} Usage Details")
 
-    # Simulated values — replace with real logic later
-    current_kwh = 0.85
-    current_cost = current_kwh * tariff
-    weekly_kwh = 5.2
-    weekly_cost = weekly_kwh * tariff
-    monthly_kwh = 22.4
-    monthly_cost = monthly_kwh * tariff
-    week_change = "+12%"
-    month_change = "-5%"
-
     col1, col2, col3, col4 = st.columns(4)
-    col1.metric("Current Usage", f"{current_kwh:.2f} kWh")
-    col2.metric("Current Cost", f"₹{current_cost:.2f}")
-    col3.metric("Weekly Total", f"{weekly_kwh:.2f} kWh\n₹{weekly_cost:.2f}")
-    col4.metric("Monthly Total", f"{monthly_kwh:.2f} kWh\n₹{monthly_cost:.2f}")
+    col1.metric("Current Usage", f"{data['usage']:.2f} kWh")
+    col2.metric("Current Cost", f"₹{data['cost']:.2f}")
+    col3.metric("Weekly Total", f"{data['usage']*6:.2f} kWh")
+    col4.metric("Monthly Total", f"{data['usage']*24:.2f} kWh")
 
-    st.markdown(f"📊 Weekly Change: **{week_change}**")
-    st.markdown(f"📊 Monthly Change: **{month_change}**")
+    st.markdown("📊 Weekly Change: **+12%**")
+    st.markdown("📊 Monthly Change: **-5%**")
 
     st.markdown("💡 **Recommendations:**")
-    st.markdown("- Use during off-peak hours to reduce cost")
-    st.markdown("- Consider energy-efficient alternatives")
-    st.markdown("- Monitor standby power usage")
+    if data["status"] == "High":
+        st.markdown("- Consider reducing usage during peak hours")
+        st.markdown("- Explore energy-efficient alternatives")
+    else:
+        st.markdown("- Usage is within optimal range")
 
 # Visual Trends
 st.subheader("📈 Visual Trends")
@@ -162,8 +175,4 @@ st.download_button("Download Summary as CSV", csv, "summary.csv", "text/csv")
 
 # Footer
 st.markdown("""
-    <hr style="margin-top:40px;">
-    <div style="text-align:center; color:gray; font-size:14px;">
-        © 2025 Smart Energy Dashboard | Built by Santosh Abhimanyu
-    </div>
-""", unsafe_allow_html=True)
+    <hr style
