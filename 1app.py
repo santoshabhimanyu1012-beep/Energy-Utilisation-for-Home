@@ -27,8 +27,8 @@ sorted_devices = sorted(device_metrics.items(), key=lambda x: status_order[x[1][
 if page == "Overview":
     st.title("⚡ Smart Energy Dashboard")
     st.markdown("Welcome to your enterprise-style energy monitoring system.")
-    st.metric("Total Energy", "10.7 kWh")
-    st.metric("Monthly Cost", "₹85.6")
+    st.metric("Total Energy ⚡", "10.7 kWh")
+    st.metric("Monthly Cost 💰", "₹85.6")
 
 # Top Consumers Page
 elif page == "Top Consumers":
@@ -37,15 +37,21 @@ elif page == "Top Consumers":
     for i, (device, data) in enumerate(sorted_devices):
         bg = "#fff1f0" if data["status"] == "High" else "#fffbe6" if data["status"] == "Medium" else "#f6ffed"
         txt = "#d4380d" if data["status"] == "High" else "#d4b106" if data["status"] == "Medium" else "#389e0d"
+
+        # Icons
+        usage_icon = "⚡"
+        cost_icon = "💰"
+        status_icon = "📊"
+
         with cols[i % 4]:
             if st.button(f"{device}", key=f"tile_{device}"):
                 st.session_state.selected_device = device
             st.markdown(f"""
                 <div style='background:{bg}; padding:12px; border-radius:10px; text-align:center; border:1px solid #ccc; margin-top:5px;'>
                     <b style='color:{txt}; font-size:16px;'>{device}</b><br>
-                    <span style='font-size:14px;'>{data['usage']} kWh</span><br>
-                    <span style='font-size:14px;'>₹{data['cost']}</span><br>
-                    <span style='font-size:12px; color:{txt};'>Status: {data['status']}</span>
+                    <span style='font-size:14px;'>{usage_icon} {data['usage']} kWh</span><br>
+                    <span style='font-size:14px;'>{cost_icon} ₹{data['cost']}</span><br>
+                    <span style='font-size:12px; color:{txt};'>{status_icon} Status: {data['status']}</span>
                 </div>
             """, unsafe_allow_html=True)
 
@@ -53,10 +59,10 @@ elif page == "Top Consumers":
         if st.session_state.get("selected_device") == device:
             st.markdown(f"##### 🔍 {device} Usage Details")
             col1, col2, col3, col4 = st.columns(4)
-            col1.metric("Current Usage", f"{data['usage']:.2f} kWh")
-            col2.metric("Current Cost", f"₹{data['cost']:.2f}")
-            col3.metric("Weekly Total", f"{data['usage']*6:.2f} kWh")
-            col4.metric("Monthly Total", f"{data['usage']*24:.2f} kWh")
+            col1.metric("Current Usage ⚡", f"{data['usage']:.2f} kWh")
+            col2.metric("Current Cost 💰", f"₹{data['cost']:.2f}")
+            col3.metric("Weekly Total 📅", f"{data['usage']*6:.2f} kWh")
+            col4.metric("Monthly Total 📅", f"{data['usage']*24:.2f} kWh")
 
             st.markdown("💡 **Recommendations:**")
             if data["status"] == "High":
@@ -71,7 +77,6 @@ elif page == "Top Consumers":
 elif page == "Trends":
     st.title("📈 Energy Trends")
     st.markdown("Charts and analytics go here.")
-    # Example chart
     df = pd.DataFrame({
         "Device": ["A.C", "Heater", "Fridge", "Fan"],
         "Usage": [2.4, 2.1, 1.9, 0.8]
