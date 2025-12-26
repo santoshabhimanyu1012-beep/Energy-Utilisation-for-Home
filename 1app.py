@@ -1,6 +1,4 @@
 import streamlit as st
-import pandas as pd
-import plotly.express as px
 
 # Page setup
 st.set_page_config(page_title="Smart Energy Dashboard", layout="wide")
@@ -22,7 +20,7 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# 🔌 Top Energy Consumers — Direct Status Tiles
+# 🔌 Status Tiles — Direct Access
 device_metrics = {
     "A.C": {"usage": 2.4, "cost": 19.2, "status": "High"},
     "Heater": {"usage": 2.1, "cost": 16.8, "status": "High"},
@@ -46,7 +44,7 @@ for i, (device, data) in enumerate(sorted_devices):
         if st.button(f"{device}", key=f"tile_{device}"):
             st.session_state.selected_device = device
         st.markdown(f"""
-            <div style='background:{bg}; padding:12px; border-radius:10px; text-align:center; border:1px solid #ccc; margin-top:5px;'>
+            <div style='background:{bg}; padding:12px; border-radius:10px; text-align:center; border:1px solid #ccc; margin-top:5px; cursor:pointer;'>
                 <b style='color:{txt}; font-size:16px;'>{device}</b><br>
                 <span style='font-size:14px;'>{data['usage']} kWh</span><br>
                 <span style='font-size:14px;'>₹{data['cost']}</span><br>
