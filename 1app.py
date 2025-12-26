@@ -5,9 +5,8 @@ import plotly.express as px
 # Page setup
 st.set_page_config(page_title="Smart Energy Dashboard", layout="wide")
 
-# Load custom CSS theme
-with open("theme.css") as f:
-    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+# Load custom CSS theme (one-liner, no indentation issues)
+st.markdown(f"<style>{open('theme.css').read()}</style>", unsafe_allow_html=True)
 
 # Top navigation bar
 st.markdown("""
